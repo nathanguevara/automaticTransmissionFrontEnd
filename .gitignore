@@ -1,0 +1,47 @@
+# dependencies
+/node_modules
+
+# production
+/dist
+/build
+
+# Vite cache
+/node_modules/.vite
+
+# local env files
+.env
+.env.*  # ignore all env files (optional, but recommended for secrets)
+
+# log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE/editor files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# misc
+*.local
+
+# Docker
+.docker/
+docker-compose.override.yml
+
+# Kubernetes
+kubeconfig
+*.kubeconfig
+
+# Build artifacts
+*.log
+coverage/
+.nyc_output/

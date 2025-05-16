@@ -1,3 +1,154 @@
+# Automatic Transmission Frontend
+
+This is a React-based frontend application containerized and ready for Kubernetes deployment.
+
+## Project Structure
+
+```
+.
+├── src/                    # Source code
+├── Dockerfile             # Multi-stage build configuration
+├── nginx.conf             # Nginx server configuration
+├── k8s/                   # Kubernetes configurations
+│   └── deployment.yaml    # Deployment and service configuration
+└── package.json          # Project dependencies
+```
+
+## Prerequisites
+
+- Node.js 20.x or later
+- Docker
+- Kubernetes cluster
+- kubectl configured to access your cluster
+- Container registry (e.g., Docker Hub, GitHub Container Registry)
+
+## Local Development
+
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+2. Start development server:
+   ```bash
+   npm run dev
+   ```
+
+## Building and Running with Docker
+
+1. Build the Docker image:
+   ```bash
+   docker build -t frontend:latest .
+   ```
+
+2. Run the container locally:
+   ```bash
+   docker run -p 80:80 frontend:latest
+   ```
+
+## Kubernetes Deployment
+
+### 1. Prepare Environment Variables
+
+Create a `.env` file in the root directory:
+```env
+DOCKER_REGISTRY=your-registry.com  # e.g., docker.io/username
+```
+
+### 2. Build and Push Docker Image
+
+```bash
+# Build the image
+docker build -t ${DOCKER_REGISTRY}/frontend:latest .
+
+# Push to your registry
+docker push ${DOCKER_REGISTRY}/frontend:latest
+```
+
+### 3. Deploy to Kubernetes
+
+```bash
+# Apply the Kubernetes configuration
+kubectl apply -f k8s/deployment.yaml
+```
+
+### 4. Verify Deployment
+
+```bash
+# Check deployment status
+kubectl get deployments
+kubectl get pods
+kubectl get services
+```
+
+## Configuration Details
+
+### Docker Setup
+- Uses multi-stage build to minimize final image size
+- Builds the React application in a Node.js container
+- Serves the built application using Nginx
+
+### Nginx Configuration
+- Configured for single-page application routing
+- Enables gzip compression for better performance
+- Sets up caching for static assets
+- Includes security headers
+
+### Kubernetes Configuration
+- Deploys 2 replicas for high availability
+- Sets resource limits and requests:
+  - CPU: 100m-200m
+  - Memory: 128Mi-256Mi
+- Creates a ClusterIP service for internal access
+
+## Monitoring and Maintenance
+
+### View Logs
+```bash
+kubectl logs -l app=frontend
+```
+
+### Scale Deployment
+```bash
+kubectl scale deployment frontend --replicas=3
+```
+
+### Update Deployment
+```bash
+# After pushing a new image
+kubectl set image deployment/frontend frontend=${DOCKER_REGISTRY}/frontend:new-tag
+```
+
+## Troubleshooting
+
+1. If pods are not starting:
+   ```bash
+   kubectl describe pod -l app=frontend
+   ```
+
+2. If service is not accessible:
+   ```bash
+   kubectl describe service frontend
+   ```
+
+3. Check nginx logs inside the container:
+   ```bash
+   kubectl exec -it <pod-name> -- nginx -t
+   ```
+
+## Security Considerations
+
+- The application runs as a non-root user in the container
+- Security headers are configured in nginx
+- Resource limits are set to prevent resource exhaustion
+- Environment variables are used for sensitive configuration
+
+## Additional Resources
+
+- [Kubernetes Documentation](https://kubernetes.io/docs/)
+- [Docker Documentation](https://docs.docker.com/)
+- [Nginx Documentation](https://nginx.org/en/docs/)
+
 # Automatic Transmission UI
 
 A modern React web application for managing media entries and making predictions using a FastAPI backend.
