@@ -29,13 +29,13 @@ export function MediaList() {
     }
   };
 
-  const handleRejectionStatusUpdate = async (hash: string, newStatus: 'unfiltered' | 'accepted' | 'rejected' | 'override') => {
+  const handleLabelUpdate = async (imdb_id: string, newLabel: 'would_watch' | 'would_not_watch') => {
     try {
-      await api.updateRejectionStatus(hash, { hash, rejection_status: newStatus });
+      await api.updateLabel(imdb_id, { imdb_id, label: newLabel });
       // Refresh the list after update
       fetchMedia();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update rejection status');
+      setError(err instanceof Error ? err.message : 'Failed to update label');
     }
   };
 
@@ -63,7 +63,8 @@ export function MediaList() {
         >
           <option value="all">All Types</option>
           <option value="movie">Movies</option>
-          <option value="tv">TV Shows</option>
+          <option value="tv_show">TV Shows</option>
+          <option value="tv_season">TV Seasons</option>
         </select>
       </div>
 
@@ -74,16 +75,16 @@ export function MediaList() {
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Year</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Label</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {mediaItems.map((item) => (
-              <tr key={item.hash}>
+              <tr key={item.imdb_id}>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm font-medium text-gray-900">{item.media_title}</div>
-                  <div className="text-sm text-gray-500">{item.original_title}</div>
+                  <div className="text-sm text-gray-500">{item.original_media_title}</div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
@@ -95,24 +96,20 @@ export function MediaList() {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                    item.rejection_status === 'accepted' ? 'bg-green-100 text-green-800' :
-                    item.rejection_status === 'rejected' ? 'bg-red-100 text-red-800' :
-                    item.rejection_status === 'override' ? 'bg-yellow-100 text-yellow-800' :
-                    'bg-gray-100 text-gray-800'
+                    item.label === 'would_watch' ? 'bg-green-100 text-green-800' :
+                    'bg-red-100 text-red-800'
                   }`}>
-                    {item.rejection_status}
+                    {item.label}
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                   <select
-                    value={item.rejection_status}
-                    onChange={(e) => handleRejectionStatusUpdate(item.hash, e.target.value as any)}
+                    value={item.label}
+                    onChange={(e) => handleLabelUpdate(item.imdb_id, e.target.value as 'would_watch' | 'would_not_watch')}
                     className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                   >
-                    <option value="unfiltered">Unfiltered</option>
-                    <option value="accepted">Accepted</option>
-                    <option value="rejected">Rejected</option>
-                    <option value="override">Override</option>
+                    <option value="would_watch">Would Watch</option>
+                    <option value="would_not_watch">Would Not Watch</option>
                   </select>
                 </td>
               </tr>

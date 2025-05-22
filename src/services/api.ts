@@ -1,10 +1,10 @@
-import { MediaResponse, RejectionStatusUpdate, ApiResponse } from '../types/api';
+import { MediaResponse, LabelUpdate, ApiResponse } from '../types/api';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/rear-diff';
 
 interface MediaQueryParams {
   media_type?: string;
-  pipeline_status?: string;
+  label?: 'would_watch' | 'would_not_watch';
   limit?: number;
   offset?: number;
   sort_by?: string;
@@ -20,24 +20,24 @@ export const api = {
       }
     });
 
-    const response = await fetch(`${API_BASE_URL}/media?${queryParams.toString()}`);
+    const response = await fetch(`${API_BASE_URL}/training?${queryParams.toString()}`);
     if (!response.ok) {
       throw new Error(`Failed to fetch media: ${response.statusText}`);
     }
     return response.json();
   },
 
-  async updateRejectionStatus(hash: string, status: RejectionStatusUpdate): Promise<ApiResponse> {
-    const response = await fetch(`${API_BASE_URL}/media/${hash}/rejection-status`, {
+  async updateLabel(imdb_id: string, label: LabelUpdate): Promise<ApiResponse> {
+    const response = await fetch(`${API_BASE_URL}/training/${imdb_id}/label`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(status),
+      body: JSON.stringify(label),
     });
 
     if (!response.ok) {
-      throw new Error(`Failed to update rejection status: ${response.statusText}`);
+      throw new Error(`Failed to update label: ${response.statusText}`);
     }
     return response.json();
   },

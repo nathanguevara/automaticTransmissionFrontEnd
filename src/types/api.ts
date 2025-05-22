@@ -1,36 +1,35 @@
 export interface MediaItem {
-  hash: string;
+  imdb_id: string;
+  tmdb_id: number;
+  label: 'would_watch' | 'would_not_watch';
   media_type: string;
   media_title: string;
   season: number | null;
   episode: number | null;
   release_year: number;
-  pipeline_status: string;
-  error_status: boolean;
-  error_condition: string | null;
-  rejection_status: 'unfiltered' | 'accepted' | 'rejected' | 'override';
-  rejection_reason: string | null;
-  parent_path: string | null;
-  target_path: string | null;
-  original_title: string;
-  original_path: string | null;
-  original_link: string | null;
-  rss_source: string | null;
-  uploader: string | null;
+  budget: number;
+  revenue: number;
+  runtime: number;
+  origin_country: string[];
+  production_companies: string[];
+  production_countries: string[];
+  production_status: string;
+  original_language: string;
+  spoken_languages: string[];
   genre: string[];
-  language: string[];
+  original_media_title: string;
+  tagline: string;
+  overview: string;
+  tmdb_rating: number;
+  tmdb_votes: number;
   rt_score: number | null;
   metascore: number | null;
   imdb_rating: number | null;
   imdb_votes: number | null;
-  imdb_id: string | null;
-  resolution: string | null;
-  video_codec: string | null;
-  upload_type: string | null;
-  audio_codec: string | null;
+  human_labeled: boolean | null;
+  anomalous: boolean | null;
   created_at: string;
   updated_at: string;
-  tmdb_id: number | null;
 }
 
 export interface MediaResponse {
@@ -44,9 +43,9 @@ export interface MediaResponse {
   };
 }
 
-export interface RejectionStatusUpdate {
-  hash: string;
-  rejection_status: 'unfiltered' | 'accepted' | 'rejected' | 'override';
+export interface LabelUpdate {
+  imdb_id: string;
+  label: 'would_watch' | 'would_not_watch';
 }
 
 export interface ApiResponse {
